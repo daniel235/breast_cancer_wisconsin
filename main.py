@@ -11,6 +11,14 @@ y = bc_data["diagnosis"]
 bc_data = bc_data.drop("diagnosis", axis=1)
 bc_data = bc_data.drop(bc_data.columns[-1], axis=1)
 
+for n in range(len(y)):
+	if y[n] == "M":
+		y[n] = 1
+	else:
+		y[n] = 0
+
+
+print("y ", y)
 #train
 ytrain = y[:int(len(y) * .7)]
 bc_data_train = bc_data[:int(len(bc_data) * .7)]
@@ -21,22 +29,38 @@ bc_data_test = bc_data[int(len(bc_data) * .7):]
 
 
 #create model
-model = LogisticRegression().fit(bc_data_train, ytrain)
+#model = LogisticRegression().fit(bc_data_train, ytrain)
 
+#predictions = model.predict(bc_data_test)
 
-predictions = model.predict(bc_data_test)
-
-print(predictions)
-print(ytest)
 
 #neural network
 nn_model = tf.keras.Sequential([
 	#input layer
-	tf.keras.layers.Dense(len(bc_data_train.iloc[0]))
+	tf.keras.layers.Dense(len(bc_data_train.iloc[0])),
 	#hidden layer
-	tf.keras.layers.Dense(10, activation='relu')
-	
+	tf.keras.layers.Dense(10, activation='relu'),
+	#output layer
+	tf.keras.layers.Dense(2)
 ])
+
+bc_train = bc_data_train.to_numpy()
+predictions = nn_model(bc_train).numpy()
+
+tf.nn.softmax(predictions).numpy()
+
+loss_function = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+
+print(loss_function(ytrain, predictions).numpy())
+
+#print(predictions)
+
+nn_model.compile(optimizer='adam',
+				loss=loss_function,
+				metrics=['accuracy']
+)
+
+nn_model.fit(bc_train, ytrain, epochs=5)
 
 
 
