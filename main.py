@@ -40,6 +40,10 @@ nn_model = tf.keras.Sequential([
 	tf.keras.layers.Dense(len(bc_data_train.iloc[0])),
 	#hidden layer
 	tf.keras.layers.Dense(10, activation='relu'),
+	#second hidden layer
+	tf.keras.layers.Dense(8, activation='relu'),
+	#third hidden layer
+	tf.keras.layers.Dense(8, activation='relu'),
 	#output layer
 	tf.keras.layers.Dense(2)
 ])
@@ -60,7 +64,10 @@ nn_model.compile(optimizer='adam',
 				metrics=['accuracy']
 )
 
-nn_model.fit(bc_train, ytrain, epochs=5)
+print(bc_train)
+ytrain = ytrain.to_numpy().astype(np.float32)
+print(ytrain)
+nn_model.fit(bc_train, ytrain, epochs=50)
 
 
 
