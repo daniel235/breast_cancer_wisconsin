@@ -9,6 +9,7 @@ bc_data = pd.read_csv("data/breast_cancer_wisconsin.csv")
 
 y = bc_data["diagnosis"]
 bc_data = bc_data.drop("diagnosis", axis=1)
+bc_data = bc_data.drop("id", axis=1)
 bc_data = bc_data.drop(bc_data.columns[-1], axis=1)
 
 for n in range(len(y)):
@@ -49,6 +50,7 @@ nn_model = tf.keras.Sequential([
 ])
 
 bc_train = bc_data_train.to_numpy()
+print(bc_train)
 predictions = nn_model(bc_train).numpy()
 
 tf.nn.softmax(predictions).numpy()
